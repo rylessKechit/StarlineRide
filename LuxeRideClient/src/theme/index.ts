@@ -1,236 +1,526 @@
 // src/theme/index.ts
 
-import { DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { configureFonts, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
-import { COLORS, TYPOGRAPHY, SPACING, LAYOUT } from '../constants';
+import { MD3LightTheme, MD3DarkTheme, configureFonts } from 'react-native-paper';
+import { useColorScheme } from 'react-native';
 
-interface FontConfig {
-  regular: {
-    fontFamily: string;
-    fontWeight: string;
+// Types pour le thème
+interface CustomTheme {
+  colors: {
+    primary: string;
+    onPrimary: string;
+    primaryContainer: string;
+    onPrimaryContainer: string;
+    secondary: string;
+    onSecondary: string;
+    secondaryContainer: string;
+    onSecondaryContainer: string;
+    tertiary: string;
+    onTertiary: string;
+    tertiaryContainer: string;
+    onTertiaryContainer: string;
+    error: string;
+    onError: string;
+    errorContainer: string;
+    onErrorContainer: string;
+    background: string;
+    onBackground: string;
+    surface: string;
+    onSurface: string;
+    surfaceVariant: string;
+    onSurfaceVariant: string;
+    outline: string;
+    outlineVariant: string;
+    shadow: string;
+    scrim: string;
+    inverseSurface: string;
+    inverseOnSurface: string;
+    inversePrimary: string;
+    elevation: {
+      level0: string;
+      level1: string;
+      level2: string;
+      level3: string;
+      level4: string;
+      level5: string;
+    };
+    surfaceDisabled: string;
+    onSurfaceDisabled: string;
+    backdrop: string;
   };
-  medium: {
-    fontFamily: string;
-    fontWeight: string;
-  };
-  light: {
-    fontFamily: string;
-    fontWeight: string;
-  };
-  thin: {
-    fontFamily: string;
-    fontWeight: string;
-  };
+  dark: boolean;
+  fonts?: any;
 }
+
+// Couleurs personnalisées LuxeRide
+const luxeRideColors = {
+  primary: '#2196F3',
+  primaryDark: '#1976D2',
+  secondary: '#FF6B35',
+  secondaryDark: '#E55A2B',
+  success: '#4CAF50',
+  successDark: '#388E3C',
+  warning: '#FF9800',
+  warningDark: '#F57C00',
+  error: '#F44336',
+  errorDark: '#D32F2F',
+  info: '#2196F3',
+  infoDark: '#1976D2',
+  background: '#FFFFFF',
+  backgroundDark: '#121212',
+  surface: '#FFFFFF',
+  surfaceDark: '#1E1E1E',
+  text: '#000000',
+  textDark: '#FFFFFF',
+  textSecondary: '#666666',
+  textSecondaryDark: '#AAAAAA',
+  border: '#E0E0E0',
+  borderDark: '#333333',
+  disabled: '#BDBDBD',
+  disabledDark: '#424242',
+};
 
 // Configuration des polices
 const fontConfig = {
   web: {
-    regular: {
-      fontFamily: 'System',
-      fontWeight: 'normal' as const,
+    displayLarge: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 57,
+      letterSpacing: 0,
+      lineHeight: 64,
     },
-    medium: {
-      fontFamily: 'System',
+    displayMedium: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 45,
+      letterSpacing: 0,
+      lineHeight: 52,
+    },
+    displaySmall: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 36,
+      letterSpacing: 0,
+      lineHeight: 44,
+    },
+    headlineLarge: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 32,
+      letterSpacing: 0,
+      lineHeight: 40,
+    },
+    headlineMedium: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 28,
+      letterSpacing: 0,
+      lineHeight: 36,
+    },
+    headlineSmall: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 24,
+      letterSpacing: 0,
+      lineHeight: 32,
+    },
+    titleLarge: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
       fontWeight: '500' as const,
+      fontSize: 22,
+      letterSpacing: 0,
+      lineHeight: 28,
     },
-    light: {
-      fontFamily: 'System',
-      fontWeight: '300' as const,
+    titleMedium: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '500' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
     },
-    thin: {
-      fontFamily: 'System',
-      fontWeight: '100' as const,
+    titleSmall: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '500' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelLarge: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '500' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelMedium: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '500' as const,
+      fontSize: 12,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    labelSmall: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '500' as const,
+      fontSize: 11,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    bodyLarge: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
+    },
+    bodyMedium: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 14,
+      letterSpacing: 0.25,
+      lineHeight: 20,
+    },
+    bodySmall: {
+      fontFamily: 'Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontWeight: '400' as const,
+      fontSize: 12,
+      letterSpacing: 0.4,
+      lineHeight: 16,
     },
   },
   ios: {
-    regular: {
+    displayLarge: {
       fontFamily: 'System',
-      fontWeight: 'normal' as const,
+      fontWeight: '400' as const,
+      fontSize: 57,
+      letterSpacing: 0,
+      lineHeight: 64,
     },
-    medium: {
+    displayMedium: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 45,
+      letterSpacing: 0,
+      lineHeight: 52,
+    },
+    displaySmall: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 36,
+      letterSpacing: 0,
+      lineHeight: 44,
+    },
+    headlineLarge: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 32,
+      letterSpacing: 0,
+      lineHeight: 40,
+    },
+    headlineMedium: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 28,
+      letterSpacing: 0,
+      lineHeight: 36,
+    },
+    headlineSmall: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 24,
+      letterSpacing: 0,
+      lineHeight: 32,
+    },
+    titleLarge: {
       fontFamily: 'System',
       fontWeight: '500' as const,
+      fontSize: 22,
+      letterSpacing: 0,
+      lineHeight: 28,
     },
-    light: {
+    titleMedium: {
       fontFamily: 'System',
-      fontWeight: '300' as const,
+      fontWeight: '500' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
     },
-    thin: {
+    titleSmall: {
       fontFamily: 'System',
-      fontWeight: '100' as const,
+      fontWeight: '500' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelLarge: {
+      fontFamily: 'System',
+      fontWeight: '500' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelMedium: {
+      fontFamily: 'System',
+      fontWeight: '500' as const,
+      fontSize: 12,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    labelSmall: {
+      fontFamily: 'System',
+      fontWeight: '500' as const,
+      fontSize: 11,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    bodyLarge: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
+    },
+    bodyMedium: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 14,
+      letterSpacing: 0.25,
+      lineHeight: 20,
+    },
+    bodySmall: {
+      fontFamily: 'System',
+      fontWeight: '400' as const,
+      fontSize: 12,
+      letterSpacing: 0.4,
+      lineHeight: 16,
     },
   },
   android: {
-    regular: {
-      fontFamily: 'sans-serif',
+    displayLarge: {
+      fontFamily: 'Roboto',
       fontWeight: 'normal' as const,
+      fontSize: 57,
+      letterSpacing: 0,
+      lineHeight: 64,
     },
-    medium: {
-      fontFamily: 'sans-serif-medium',
+    displayMedium: {
+      fontFamily: 'Roboto',
       fontWeight: 'normal' as const,
+      fontSize: 45,
+      letterSpacing: 0,
+      lineHeight: 52,
     },
-    light: {
-      fontFamily: 'sans-serif-light',
+    displaySmall: {
+      fontFamily: 'Roboto',
       fontWeight: 'normal' as const,
+      fontSize: 36,
+      letterSpacing: 0,
+      lineHeight: 44,
     },
-    thin: {
-      fontFamily: 'sans-serif-thin',
+    headlineLarge: {
+      fontFamily: 'Roboto',
       fontWeight: 'normal' as const,
+      fontSize: 32,
+      letterSpacing: 0,
+      lineHeight: 40,
+    },
+    headlineMedium: {
+      fontFamily: 'Roboto',
+      fontWeight: 'normal' as const,
+      fontSize: 28,
+      letterSpacing: 0,
+      lineHeight: 36,
+    },
+    headlineSmall: {
+      fontFamily: 'Roboto',
+      fontWeight: 'normal' as const,
+      fontSize: 24,
+      letterSpacing: 0,
+      lineHeight: 32,
+    },
+    titleLarge: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 22,
+      letterSpacing: 0,
+      lineHeight: 28,
+    },
+    titleMedium: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
+    },
+    titleSmall: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelLarge: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 14,
+      letterSpacing: 0.1,
+      lineHeight: 20,
+    },
+    labelMedium: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 12,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    labelSmall: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal' as const,
+      fontSize: 11,
+      letterSpacing: 0.5,
+      lineHeight: 16,
+    },
+    bodyLarge: {
+      fontFamily: 'Roboto',
+      fontWeight: 'normal' as const,
+      fontSize: 16,
+      letterSpacing: 0.15,
+      lineHeight: 24,
+    },
+    bodyMedium: {
+      fontFamily: 'Roboto',
+      fontWeight: 'normal' as const,
+      fontSize: 14,
+      letterSpacing: 0.25,
+      lineHeight: 20,
+    },
+    bodySmall: {
+      fontFamily: 'Roboto',
+      fontWeight: 'normal' as const,
+      fontSize: 12,
+      letterSpacing: 0.4,
+      lineHeight: 16,
     },
   },
 };
 
-// Thème clair pour React Native Paper
-export const lightTheme = {
+// Thème clair LuxeRide
+export const lightTheme: CustomTheme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: COLORS.primary,
-    primaryContainer: COLORS.primary + '20',
-    secondary: COLORS.secondary,
-    secondaryContainer: COLORS.secondary + '20',
-    tertiary: COLORS.accent,
-    tertiaryContainer: COLORS.accent + '20',
-    surface: COLORS.surface,
-    surfaceVariant: COLORS.surfaceVariant,
-    background: COLORS.background,
-    error: COLORS.error,
-    errorContainer: COLORS.error + '20',
-    onPrimary: COLORS.textOnPrimary,
-    onSecondary: COLORS.textPrimary,
-    onTertiary: COLORS.textOnPrimary,
-    onSurface: COLORS.textPrimary,
-    onSurfaceVariant: COLORS.textSecondary,
-    onBackground: COLORS.textPrimary,
-    onError: COLORS.textOnPrimary,
-    outline: COLORS.border,
-    outlineVariant: COLORS.borderLight,
-    shadow: COLORS.textPrimary,
-    scrim: COLORS.overlay,
-    inverseSurface: COLORS.textPrimary,
-    inverseOnSurface: COLORS.surface,
-    inversePrimary: COLORS.primary,
+    primary: luxeRideColors.primary,
+    onPrimary: '#FFFFFF',
+    primaryContainer: '#E3F2FD',
+    onPrimaryContainer: '#0D47A1',
+    secondary: luxeRideColors.secondary,
+    onSecondary: '#FFFFFF',
+    secondaryContainer: '#FFE0DB',
+    onSecondaryContainer: '#BF360C',
+    tertiary: '#6200EE',
+    onTertiary: '#FFFFFF',
+    tertiaryContainer: '#F3E5F5',
+    onTertiaryContainer: '#4A148C',
+    error: luxeRideColors.error,
+    onError: '#FFFFFF',
+    errorContainer: '#FFEBEE',
+    onErrorContainer: '#B71C1C',
+    background: luxeRideColors.background,
+    onBackground: luxeRideColors.text,
+    surface: luxeRideColors.surface,
+    onSurface: luxeRideColors.text,
+    surfaceVariant: '#F5F5F5',
+    onSurfaceVariant: luxeRideColors.textSecondary,
+    outline: luxeRideColors.border,
+    outlineVariant: '#E0E0E0',
+    shadow: '#000000',
+    scrim: '#000000',
+    inverseSurface: '#2E2E2E',
+    inverseOnSurface: '#F5F5F5',
+    inversePrimary: '#90CAF9',
     elevation: {
       level0: 'transparent',
-      level1: COLORS.surface,
-      level2: '#f7f7f7',
-      level3: '#f0f0f0',
-      level4: '#eeeeee',
-      level5: '#e8e8e8',
+      level1: '#F8F8F8',
+      level2: '#F3F3F3',
+      level3: '#EEEEEE',
+      level4: '#ECECEC',
+      level5: '#E8E8E8',
     },
-    // Couleurs personnalisées LuxeRide
-    success: COLORS.success,
-    warning: COLORS.warning,
-    info: COLORS.info,
-    gold: COLORS.gold,
-    silver: COLORS.silver,
-    premium: COLORS.premium,
+    surfaceDisabled: luxeRideColors.disabled,
+    onSurfaceDisabled: '#FFFFFF',
+    backdrop: 'rgba(0, 0, 0, 0.5)',
   },
-  fonts: configureFonts({}),
-  roundness: LAYOUT.borderRadius.md,
+  fonts: configureFonts({ config: fontConfig.android }),
+  dark: false,
 };
 
-// Thème sombre pour React Native Paper
-export const darkTheme = {
+// Thème sombre LuxeRide
+export const darkTheme: CustomTheme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: '#6B9FFF', // Bleu plus clair pour le mode sombre
-    primaryContainer: '#1E3A8A',
-    secondary: '#FFB366', // Or plus clair
-    secondaryContainer: '#F59E0B',
-    tertiary: '#4AE374', // Vert plus clair
-    tertiaryContainer: '#10B981',
-    surface: '#1E1E1E',
-    surfaceVariant: '#2A2A2A',
-    background: '#121212',
-    error: '#FF6B6B',
-    errorContainer: '#8B0000',
-    onPrimary: '#FFFFFF',
+    primary: luxeRideColors.primary,
+    onPrimary: '#000000',
+    primaryContainer: '#1565C0',
+    onPrimaryContainer: '#E3F2FD',
+    secondary: luxeRideColors.secondary,
     onSecondary: '#000000',
+    secondaryContainer: '#D84315',
+    onSecondaryContainer: '#FFE0DB',
+    tertiary: '#BB86FC',
     onTertiary: '#000000',
-    onSurface: '#FFFFFF',
-    onSurfaceVariant: '#B0B0B0',
-    onBackground: '#FFFFFF',
-    onError: '#FFFFFF',
-    outline: '#404040',
-    outlineVariant: '#2A2A2A',
+    tertiaryContainer: '#6200EE',
+    onTertiaryContainer: '#F3E5F5',
+    error: luxeRideColors.errorDark,
+    onError: '#000000',
+    errorContainer: '#CF6679',
+    onErrorContainer: '#FFEBEE',
+    background: luxeRideColors.backgroundDark,
+    onBackground: luxeRideColors.textDark,
+    surface: luxeRideColors.surfaceDark,
+    onSurface: luxeRideColors.textDark,
+    surfaceVariant: '#2E2E2E',
+    onSurfaceVariant: luxeRideColors.textSecondaryDark,
+    outline: luxeRideColors.borderDark,
+    outlineVariant: '#424242',
     shadow: '#000000',
-    scrim: 'rgba(0, 0, 0, 0.7)',
-    inverseSurface: '#FFFFFF',
-    inverseOnSurface: '#121212',
-    inversePrimary: COLORS.primary,
+    scrim: '#000000',
+    inverseSurface: '#F5F5F5',
+    inverseOnSurface: '#2E2E2E',
+    inversePrimary: luxeRideColors.primaryDark,
     elevation: {
       level0: 'transparent',
-      level1: '#1E1E1E',
-      level2: '#232323',
-      level3: '#282828',
-      level4: '#2C2C2C',
-      level5: '#313131',
+      level1: '#242424',
+      level2: '#2A2A2A',
+      level3: '#303030',
+      level4: '#353535',
+      level5: '#3A3A3A',
     },
-    // Couleurs personnalisées pour le mode sombre
-    success: '#4AE374',
-    warning: '#FFB366',
-    info: '#6B9FFF',
-    gold: '#FFD700',
-    silver: '#E5E5E5',
-    premium: '#B794F6',
+    surfaceDisabled: luxeRideColors.disabledDark,
+    onSurfaceDisabled: '#AAAAAA',
+    backdrop: 'rgba(0, 0, 0, 0.7)',
   },
-  fonts: configureFonts({}),
-  roundness: LAYOUT.borderRadius.md,
+  fonts: configureFonts({ config: fontConfig.android }),
+  dark: true,
 };
 
-// Thème pour React Navigation (clair)
-export const lightNavigationTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: COLORS.primary,
-    background: COLORS.background,
-    card: COLORS.surface,
-    text: COLORS.textPrimary,
-    border: COLORS.border,
-    notification: COLORS.error,
-  },
+// Hook pour utiliser le thème
+export const useTheme = (): CustomTheme => {
+  const colorScheme = useColorScheme();
+  return colorScheme === 'dark' ? darkTheme : lightTheme;
 };
 
-// Thème pour React Navigation (sombre)
-export const darkNavigationTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    primary: '#6B9FFF',
-    background: '#121212',
-    card: '#1E1E1E',
-    text: '#FFFFFF',
-    border: '#404040',
-    notification: '#FF6B6B',
-  },
-};
-
-// Types pour TypeScript
-export type Theme = typeof lightTheme;
-export type NavigationTheme = typeof lightNavigationTheme;
-
-// Utilitaires pour créer des styles avec le thème
-export const createThemedStyles = <T>(
-  styleCreator: (theme: Theme) => T
-) => {
-  return (theme: Theme) => styleCreator(theme);
-};
-
-// Hook pour utiliser le thème dans les composants
-import { useTheme as usePaperTheme } from 'react-native-paper';
-export const useTheme = () => usePaperTheme<Theme>();
-
-// Styles communs réutilisables
+// Styles communs
 export const commonStyles = {
   container: {
     flex: 1,
-    padding: SPACING.md,
+    backgroundColor: lightTheme.colors.background,
   },
-  centerContent: {
+  containerDark: {
+    flex: 1,
+    backgroundColor: darkTheme.colors.background,
+  },
+  centered: {
     flex: 1,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
@@ -250,135 +540,116 @@ export const commonStyles = {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: LAYOUT.borderRadius.md,
-    padding: SPACING.md,
-    marginVertical: SPACING.sm,
-    ...{
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
+    backgroundColor: lightTheme.colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    margin: 8,
   },
-  inputContainer: {
-    marginVertical: SPACING.sm,
+  cardDark: {
+    backgroundColor: darkTheme.colors.surface,
+    borderRadius: 12,
+    padding: 16,
+    margin: 8,
   },
-  buttonContainer: {
-    marginVertical: SPACING.md,
+  button: {
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
   },
-  separator: {
+  input: {
+    borderRadius: 8,
+    backgroundColor: lightTheme.colors.surface,
+  },
+  inputDark: {
+    borderRadius: 8,
+    backgroundColor: darkTheme.colors.surface,
+  },
+  text: {
+    color: lightTheme.colors.onSurface,
+  },
+  textDark: {
+    color: darkTheme.colors.onSurface,
+  },
+  textSecondary: {
+    color: luxeRideColors.textSecondary,
+  },
+  textSecondaryDark: {
+    color: luxeRideColors.textSecondaryDark,
+  },
+  divider: {
     height: 1,
-    backgroundColor: COLORS.border,
-    marginVertical: SPACING.sm,
+    backgroundColor: luxeRideColors.border,
+    marginVertical: 8,
   },
-  safeArea: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  header: {
-    backgroundColor: COLORS.primary,
-    height: LAYOUT.headerHeight,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-    paddingHorizontal: SPACING.md,
-  },
-  headerTitle: {
-    ...TYPOGRAPHY.h4,
-    color: COLORS.textOnPrimary,
-  },
-  screenPadding: {
-    paddingHorizontal: LAYOUT.screenPadding,
-  },
-  bottomPadding: {
-    paddingBottom: LAYOUT.tabBarHeight,
+  dividerDark: {
+    height: 1,
+    backgroundColor: luxeRideColors.borderDark,
+    marginVertical: 8,
   },
 };
 
-// Animations et transitions
-export const animations = {
-  fadeIn: {
-    from: { opacity: 0 },
-    to: { opacity: 1 },
-  },
-  slideInUp: {
-    from: { transform: [{ translateY: 100 }] },
-    to: { transform: [{ translateY: 0 }] },
-  },
-  slideInDown: {
-    from: { transform: [{ translateY: -100 }] },
-    to: { transform: [{ translateY: 0 }] },
-  },
-  scaleIn: {
-    from: { transform: [{ scale: 0.8 }] },
-    to: { transform: [{ scale: 1 }] },
-  },
+// Constantes de design
+export const SPACING = {
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
 };
 
-// Breakpoints pour responsive design
-export const breakpoints = {
-  small: 360,
-  medium: 768,
-  large: 1024,
-  extraLarge: 1440,
+export const BORDER_RADIUS = {
+  sm: 4,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  round: 50,
 };
 
-// Utilitaire pour vérifier la taille d'écran
-import { Dimensions } from 'react-native';
-
-export const getScreenSize = () => {
-  const { width } = Dimensions.get('window');
-  
-  if (width < breakpoints.small) return 'xs';
-  if (width < breakpoints.medium) return 'sm';
-  if (width < breakpoints.large) return 'md';
-  if (width < breakpoints.extraLarge) return 'lg';
-  return 'xl';
+export const FONT_SIZES = {
+  xs: 12,
+  sm: 14,
+  md: 16,
+  lg: 18,
+  xl: 20,
+  xxl: 24,
+  xxxl: 32,
 };
 
-// Hook pour la taille d'écran
-import { useState, useEffect } from 'react';
-
-export const useScreenSize = () => {
-  const [screenSize, setScreenSize] = useState(getScreenSize());
-
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', () => {
-      setScreenSize(getScreenSize());
-    });
-
-    return () => subscription?.remove();
-  }, []);
-
-  return screenSize;
+export const FONT_WEIGHTS = {
+  light: '300',
+  regular: '400',
+  medium: '500',
+  semiBold: '600',
+  bold: '700',
 };
 
-// Utilitaire pour créer des styles responsifs
-export const responsive = {
-  fontSize: (base: number) => {
-    const size = getScreenSize();
-    const multipliers = { xs: 0.8, sm: 0.9, md: 1, lg: 1.1, xl: 1.2 };
-    return base * (multipliers[size] || 1);
-  },
-  
-  spacing: (base: number) => {
-    const size = getScreenSize();
-    const multipliers = { xs: 0.8, sm: 0.9, md: 1, lg: 1.1, xl: 1.2 };
-    return base * (multipliers[size] || 1);
-  },
-  
-  borderRadius: (base: number) => {
-    const size = getScreenSize();
-    const multipliers = { xs: 0.8, sm: 0.9, md: 1, lg: 1, xl: 1 };
-    return base * (multipliers[size] || 1);
-  },
+// Utilitaires de thème
+export const getThemeColor = (theme: CustomTheme, colorName: keyof CustomTheme['colors']): string => {
+  const colorValue = theme.colors[colorName];
+  if (typeof colorValue === 'string') {
+    return colorValue;
+  }
+  // If the color is an object (like 'elevation'), return a default or specific level
+  if (typeof colorValue === 'object' && colorValue !== null && 'level1' in colorValue) {
+    return colorValue.level1;
+  }
+  // Fallback to a default color if needed
+  return '#000000';
 };
+
+export const getContrastColor = (theme: CustomTheme, backgroundColor: string): string => {
+  // Logique simple pour déterminer si utiliser du texte clair ou sombre
+  const isDark = backgroundColor === theme.colors.primary || 
+                 backgroundColor === theme.colors.secondary || 
+                 theme.dark;
+  return isDark ? '#FFFFFF' : '#000000';
+};
+
+// Export du thème par défaut
+export default lightTheme;

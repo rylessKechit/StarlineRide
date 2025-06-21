@@ -1,108 +1,25 @@
-// src/components/common/LoadingOverlay.tsx
-
 import React from 'react';
-import { View, StyleSheet, Modal } from 'react-native';
-import { ActivityIndicator, Text, Surface } from 'react-native-paper';
-import { useTheme } from '../../theme';
+import { View, StyleSheet } from 'react-native';
+import { Text, ActivityIndicator } from 'react-native-paper';
 
 interface LoadingOverlayProps {
   message?: string;
   visible?: boolean;
-  transparent?: boolean;
-  size?: 'small' | 'large';
-  color?: string;
 }
 
-export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
-  message = 'Chargement...',
-  visible = true,
-  transparent = true,
-  size = 'large',
-  color
+export const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ 
+  message = 'Chargement...', 
+  visible = true 
 }) => {
-  const theme = useTheme();
-
   if (!visible) return null;
 
   return (
-    <Modal
-      transparent={transparent}
-      visible={visible}
-      animationType="fade"
-      statusBarTranslucent
-    >
-      <View style={styles.overlay}>
-        <Surface style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-          <ActivityIndicator 
-            size={size} 
-            color={color || theme.colors.primary}
-            style={styles.indicator}
-          />
-          {message && (
-            <Text 
-              style={[styles.message, { color: theme.colors.onSurface }]}
-              variant="bodyMedium"
-            >
-              {message}
-            </Text>
-          )}
-        </Surface>
-      </View>
-    </Modal>
-  );
-};
-
-// Version simplifiée pour usage dans les composants sans modal
-export const LoadingIndicator: React.FC<LoadingOverlayProps> = ({
-  message = 'Chargement...',
-  size = 'large',
-  color
-}) => {
-  const theme = useTheme();
-
-  return (
-    <View style={styles.simpleContainer}>
-      <ActivityIndicator 
-        size={size} 
-        color={color || theme.colors.primary}
-        style={styles.indicator}
-      />
-      {message && (
-        <Text 
-          style={[styles.message, { color: theme.colors.onSurface }]}
-          variant="bodyMedium"
-        >
+    <View style={styles.overlay}>
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#2196F3" />
+        <Text variant="bodyMedium" style={styles.message}>
           {message}
         </Text>
-      )}
-    </View>
-  );
-};
-
-// Version pour les écrans de chargement complets
-export const FullScreenLoading: React.FC<LoadingOverlayProps> = ({
-  message = 'Chargement...',
-  size = 'large',
-  color
-}) => {
-  const theme = useTheme();
-
-  return (
-    <View style={[styles.fullScreen, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.centerContent}>
-        <ActivityIndicator 
-          size={size} 
-          color={color || theme.colors.primary}
-          style={styles.indicator}
-        />
-        {message && (
-          <Text 
-            style={[styles.message, { color: theme.colors.onBackground }]}
-            variant="bodyLarge"
-          >
-            {message}
-          </Text>
-        )}
       </View>
     </View>
   );
@@ -110,41 +27,26 @@ export const FullScreenLoading: React.FC<LoadingOverlayProps> = ({
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1000,
   },
   container: {
+    backgroundColor: 'white',
     padding: 24,
-    borderRadius: 16,
+    borderRadius: 12,
+    alignItems: 'center',
     minWidth: 150,
-    alignItems: 'center',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-  },
-  simpleContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  fullScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centerContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indicator: {
-    marginBottom: 16,
   },
   message: {
+    marginTop: 16,
     textAlign: 'center',
-    lineHeight: 20,
+    color: '#666',
   },
 });
