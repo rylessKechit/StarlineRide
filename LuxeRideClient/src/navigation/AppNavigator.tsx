@@ -245,8 +245,8 @@ const MainTabNavigator: React.FC = () => {
 export const AppNavigator: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, isInitialized } = useAppSelector((state) => ({
-    isAuthenticated: state.auth.isAuthenticated,
-    isInitialized: state.auth.isInitialized,
+    isAuthenticated: (state as any).isAuthenticated,
+    isInitialized: (state as any).auth.isInitialized,
   }));
 
   useEffect(() => {
@@ -289,7 +289,7 @@ export const RootNavigator: React.FC = () => {
         name="LiveTrackingModal" 
         component={LiveTrackingScreen}
         options={{
-          presentation: 'fullScreenModal',
+          presentation: 'modal' as const,
         }}
       />
     </RootStack.Navigator>

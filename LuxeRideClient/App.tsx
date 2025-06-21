@@ -38,8 +38,8 @@ LogBox.ignoreLogs([
 // Composant App principal avec Redux
 const AppContent: React.FC = () => {
   const { theme: themeMode, isAppInitialized } = useAppSelector((state) => ({
-    theme: state.ui.theme,
-    isAppInitialized: state.auth.isInitialized,
+    theme: (state as any).ui.theme,
+    isAppInitialized: (state as any).auth.isInitialized,
   }));
 
   // Déterminer le thème à utiliser

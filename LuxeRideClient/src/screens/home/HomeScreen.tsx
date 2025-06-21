@@ -55,8 +55,8 @@ export const HomeScreen: React.FC = () => {
   const navigation = useAppNavigation();
 
   // Redux state
-  const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-  const { currentBooking, bookings, isLoading } = useAppSelector((state) => state.booking);
+  const { user, isAuthenticated } = useAppSelector((state) => (state as any).auth);
+  const { currentBooking, bookings, isLoading } = useAppSelector((state) => (state as any).booking);
 
   // Local state
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
@@ -252,10 +252,10 @@ export const HomeScreen: React.FC = () => {
 
   const hasActiveBooking = currentBooking && 
     ['PENDING', 'CONFIRMED', 'DRIVER_ASSIGNED', 'DRIVER_EN_ROUTE', 'DRIVER_ARRIVED', 'IN_PROGRESS']
-      .includes(currentBooking.status);
+      .includes(currentBooking.status as string);
 
   const recentBookings = bookings
-    .filter(b => ['COMPLETED', 'CANCELLED'].includes(b.status))
+    .filter((b: any) => ['COMPLETED', 'CANCELLED'].includes(b.status))
     .slice(0, 3);
 
   return (
@@ -353,7 +353,7 @@ export const HomeScreen: React.FC = () => {
 
         {/* Destinations favorites */}
         <FavoriteDestinations
-          onDestinationSelect={(destination) => {
+          onDestinationSelect={(destination: any) => {
             navigation.navigate('BookingModal', {
               screen: 'Booking',
               params: {
@@ -387,7 +387,7 @@ export const HomeScreen: React.FC = () => {
               )}
             />
             <Card.Content>
-              {recentBookings.map((booking, index) => (
+              {recentBookings.map((booking: any, index: any) => (
                 <View key={booking.id} style={styles.recentBookingItem}>
                   <Icon 
                     name="map-marker-outline" 

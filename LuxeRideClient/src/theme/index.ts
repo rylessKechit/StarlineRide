@@ -4,6 +4,25 @@ import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { configureFonts, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 import { COLORS, TYPOGRAPHY, SPACING, LAYOUT } from '../constants';
 
+interface FontConfig {
+  regular: {
+    fontFamily: string;
+    fontWeight: string;
+  };
+  medium: {
+    fontFamily: string;
+    fontWeight: string;
+  };
+  light: {
+    fontFamily: string;
+    fontWeight: string;
+  };
+  thin: {
+    fontFamily: string;
+    fontWeight: string;
+  };
+}
+
 // Configuration des polices
 const fontConfig = {
   web: {
@@ -108,7 +127,7 @@ export const lightTheme = {
     silver: COLORS.silver,
     premium: COLORS.premium,
   },
-  fonts: configureFonts({ config: fontConfig }),
+  fonts: configureFonts({}),
   roundness: LAYOUT.borderRadius.md,
 };
 
@@ -158,7 +177,7 @@ export const darkTheme = {
     silver: '#E5E5E5',
     premium: '#B794F6',
   },
-  fonts: configureFonts({ config: fontConfig }),
+  fonts: configureFonts({}),
   roundness: LAYOUT.borderRadius.md,
 };
 

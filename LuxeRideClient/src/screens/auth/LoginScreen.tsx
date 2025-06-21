@@ -46,7 +46,7 @@ export const LoginScreen: React.FC = () => {
   const navigation = useAppNavigation();
 
   // Redux state
-  const { isLoading, error, biometricEnabled } = useAppSelector((state) => state.auth);
+  const { isLoading, error, biometricEnabled } = useAppSelector((state) => (state as any).auth);
 
   // Local state
   const [showPassword, setShowPassword] = useState(false);
@@ -152,16 +152,15 @@ export const LoginScreen: React.FC = () => {
       }
 
       // Authentification biométrique
-      const biometryType = await TouchID.isSupported();
-      await TouchID.authenticate(
-        `Utilisez votre ${biometryType === 'FaceID' ? 'Face ID' : 'empreinte'} pour vous connecter à LuxeRide`,
-        {
-          title: 'Connexion LuxeRide',
-          subtitle: 'Authentification biométrique',
-          fallbackLabel: 'Utiliser le mot de passe',
-          cancelLabel: 'Annuler',
-        }
-      );
+      const optionalConfigObject = {
+        title: 'Authentification requise', // Android
+        cancelText: 'Annuler', // Android (pas cancelLabel)
+        fallbackLabel: 'Utiliser le mot de passe', // iOS
+        passcodeFallback: false, // iOS
+        unifiedErrors: false,
+      };
+
+      await TouchID.authenticate('Authentification biométrique', optionalConfigObject);
 
       // Si l'authentification réussit, connecter l'utilisateur
       dispatch(loginWithBiometric());

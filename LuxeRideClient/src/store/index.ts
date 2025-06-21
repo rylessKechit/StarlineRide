@@ -100,10 +100,10 @@ export const clearStore = () => {
 };
 
 // Selectors utiles
-export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
-export const selectCurrentUser = (state: RootState) => state.auth.user;
-export const selectAuthToken = (state: RootState) => state.auth.token;
-export const selectCurrentBooking = (state: RootState) => state.booking.currentBooking;
-export const selectCurrentLocation = (state: RootState) => state.location.currentLocation;
-export const selectTheme = (state: RootState) => state.ui.theme;
-export const selectLanguage = (state: RootState) => state.ui.language;
+export const selectIsAuthenticated = (state: RootState) => (state as any).auth.isAuthenticated;
+export const selectCurrentUser = (state: RootState) => (state as any).auth.user;
+export const selectAuthToken = (state: RootState) => (state as any).auth.token;
+export const selectCurrentBooking = (state: RootState) => (state as any).booking.currentBooking;
+export const selectCurrentLocation = (state: RootState) => (state as any).location.currentLocation;
+export const selectTheme = (state: RootState) => (state as any).ui.theme;
+export const selectLanguage = (state: RootState) => (state as any).ui.language;
