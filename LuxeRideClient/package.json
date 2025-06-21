@@ -24,6 +24,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@stripe/stripe-react-native": "^0.48.0",
     "axios": "^1.10.0",
+    "date-fns": "^4.1.0",
     "react": "19.1.0",
     "react-hook-form": "^7.58.1",
     "react-native": "0.80.0",

@@ -9,13 +9,44 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppDispatch, useAppSelector } from '../store';
 import { initializeAuth } from '../store/slices/authSlice';
 
-// Types
-import { 
-  AuthStackParamList, 
-  MainTabParamList,
-  BookingStackParamList,
-  ProfileStackParamList 
-} from '../types';
+// Types - Définition correcte des types de navigation
+export type AuthStackParamList = {
+  Splash: undefined;
+  Onboarding: undefined;
+  Login: undefined;
+  Register: undefined;
+  ForgotPassword: undefined;
+  PhoneVerification: { phone: string };
+};
+
+export type MainTabParamList = {
+  Home: undefined;
+  Bookings: undefined;
+  Profile: undefined;
+};
+
+export type BookingStackParamList = {
+  Booking: { pickupLocation?: any };
+  VehicleSelection: { pickup: any; dropoff: any; scheduledFor: Date };
+  BookingConfirmation: { bookingData: any };
+  LiveTracking: { bookingId: string };
+};
+
+export type ProfileStackParamList = {
+  ProfileMain: undefined;
+  EditProfile: undefined;
+  Settings: undefined;
+  PaymentMethods: undefined;
+  PaymentHistory: undefined;
+  Loyalty: undefined;
+};
+
+// Type pour le RootStack qui inclut les modales
+export type RootStackParamList = {
+  Main: undefined;
+  BookingModal: undefined;
+  LiveTrackingModal: { bookingId: string };
+};
 
 // Screens
 import { SplashScreen } from '../screens/auth/SplashScreen';
@@ -49,6 +80,7 @@ const AuthStack = createStackNavigator<AuthStackParamList>();
 const MainTab = createBottomTabNavigator<MainTabParamList>();
 const BookingStack = createStackNavigator<BookingStackParamList>();
 const ProfileStack = createStackNavigator<ProfileStackParamList>();
+const RootStack = createStackNavigator<RootStackParamList>();
 
 // ================================
 // AUTH NAVIGATOR
@@ -245,7 +277,7 @@ const MainTabNavigator: React.FC = () => {
 export const AppNavigator: React.FC = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated, isInitialized } = useAppSelector((state) => ({
-    isAuthenticated: (state as any).isAuthenticated,
+    isAuthenticated: (state as any).auth.isAuthenticated,
     isInitialized: (state as any).auth.isInitialized,
   }));
 
@@ -264,10 +296,8 @@ export const AppNavigator: React.FC = () => {
 };
 
 // ================================
-// NAVIGATEURS MODAUX (pour overlay screens)
+// NAVIGATEUR RACINE AVEC MODALES
 // ================================
-const RootStack = createStackNavigator();
-
 export const RootNavigator: React.FC = () => {
   return (
     <RootStack.Navigator 
@@ -289,7 +319,8 @@ export const RootNavigator: React.FC = () => {
         name="LiveTrackingModal" 
         component={LiveTrackingScreen}
         options={{
-          presentation: 'modal' as const,
+          presentation: 'modal',
+          headerShown: false,
         }}
       />
     </RootStack.Navigator>
@@ -299,17 +330,27 @@ export const RootNavigator: React.FC = () => {
 // ================================
 // HOOKS UTILITAIRES POUR LA NAVIGATION
 // ================================
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Hook pour la navigation typée
-export const useAppNavigation = <T extends Record<string, any>>() => {
-  return useNavigation<StackNavigationProp<T>>();
+// Hook pour la navigation typée du RootStack
+export const useAppNavigation = () => {
+  return useNavigation<StackNavigationProp<RootStackParamList>>();
 };
 
-// Hook pour les paramètres de route typés
-export const useAppRoute = <T extends Record<string, any>>() => {
-  return useRoute<any>();
+// Hook pour la navigation des tabs
+export const useTabNavigation = () => {
+  return useNavigation<StackNavigationProp<MainTabParamList>>();
+};
+
+// Hook pour les paramètres de route typés du LiveTracking
+export const useLiveTrackingRoute = () => {
+  return useRoute<RouteProp<RootStackParamList, 'LiveTrackingModal'>>();
+};
+
+// Hook pour les paramètres de route typés du Booking
+export const useBookingRoute = () => {
+  return useRoute<RouteProp<BookingStackParamList, 'LiveTracking'>>();
 };
 
 // Fonctions de navigation globale
