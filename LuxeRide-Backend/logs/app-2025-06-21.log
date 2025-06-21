@@ -1,0 +1,73 @@
+[2025-06-21T14:21:49.198Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:21:49.199Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:21:49.199Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:21:49.428Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:21:49.428Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:21:49.433Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:23:55.914Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:23:55.914Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:23:55.914Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:23:55.925Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:23:55.925Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:23:55.928Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:24:56.120Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:24:56.120Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:24:56.121Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:24:56.134Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:24:56.134Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:24:56.136Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:25:07.387Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:25:07.387Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:25:07.387Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:25:07.398Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:25:07.398Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:25:07.400Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:25:45.619Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:25:45.619Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:25:45.619Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:25:45.632Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:25:45.633Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:25:45.635Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:25:55.349Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:25:55.349Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:25:55.349Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:25:55.360Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:25:55.360Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:25:55.362Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:26:42.729Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:26:42.730Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:26:42.730Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:26:42.741Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:26:42.742Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:26:42.744Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:26:51.307Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:26:51.308Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:26:51.308Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:26:51.320Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:26:51.321Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:26:51.322Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:28:07.098Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:28:07.098Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:28:07.098Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:28:07.111Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:28:07.111Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:28:07.113Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:28:27.683Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:28:27.684Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:28:27.684Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:28:27.696Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:28:27.696Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:28:27.698Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T14:28:35.013Z] [INFO] 🔹 PostgreSQL connection closed through app termination 
+[2025-06-21T14:28:55.350Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T14:28:55.351Z] [INFO] 🌍 Environment: development 
+[2025-06-21T14:28:55.351Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T14:28:55.364Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T14:28:55.365Z] [INFO] 📊 Database: Remote 
+[2025-06-21T14:28:55.367Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-21T15:00:57.177Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-21T15:00:57.177Z] [INFO] 🌍 Environment: development 
+[2025-06-21T15:00:57.177Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-21T15:00:57.190Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-21T15:00:57.191Z] [INFO] 📊 Database: Remote 
+[2025-06-21T15:00:57.193Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]

@@ -1,0 +1,403 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ================================
+// USER MODELS
+// ================================
+
+model User {
+  id                String          @id @default(cuid())
+  email             String          @unique
+  phone             String          @unique
+  firstName         String
+  lastName          String
+  avatar            String?
+  dateOfBirth       DateTime?
+  
+  // Authentification
+  password          String
+  emailVerified     Boolean         @default(false)
+  phoneVerified     Boolean         @default(false)
+  isActive          Boolean         @default(true)
+  
+  // Preferences
+  language          String          @default("fr")
+  currency          String          @default("EUR")
+  preferredTemp     Int             @default(22)
+  preferredMusic    String?
+  specialRequests   String?
+  
+  // Loyalty program
+  loyaltyPoints     Int             @default(0)
+  membershipTier    MembershipTier  @default(STANDARD)
+  
+  // Relations
+  bookings          Booking[]
+  payments          Payment[]
+  reviews           Review[]
+  addresses         Address[]
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("users")
+}
+
+model Driver {
+  id                String          @id @default(cuid())
+  email             String          @unique
+  phone             String          @unique
+  firstName         String
+  lastName          String
+  avatar            String?
+  dateOfBirth       DateTime
+  
+  // Authentification
+  password          String
+  emailVerified     Boolean         @default(false)
+  phoneVerified     Boolean         @default(false)
+  isActive          Boolean         @default(false)
+  isOnline          Boolean         @default(false)
+  
+  // Professional info
+  licenseNumber     String          @unique
+  licenseExpiry     DateTime
+  experience        Int             // years
+  languages         String[]        @default(["fr"])
+  rating            Decimal         @default(5.0) @db.Decimal(2,1)
+  totalRides        Int             @default(0)
+  
+  // Current location
+  currentLat        Decimal?        @db.Decimal(10,8)
+  currentLng        Decimal?        @db.Decimal(11,8)
+  lastLocationUpdate DateTime?
+  
+  // Status
+  status            DriverStatus    @default(OFFLINE)
+  
+  // Relations
+  vehicles          Vehicle[]
+  bookings          Booking[]
+  documents         Document[]
+  reviews           Review[]       @relation("DriverReviews")
+  earnings          Earning[]
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("drivers")
+}
+
+// ================================
+// VEHICLE MODELS
+// ================================
+
+model Vehicle {
+  id                String          @id @default(cuid())
+  driverId          String
+  
+  // Vehicle info
+  brand             String
+  model             String
+  year              Int
+  color             String
+  licensePlate      String          @unique
+  category          VehicleCategory
+  
+  // Features
+  features          String[]        @default([])
+  maxPassengers     Int
+  hasWifi           Boolean         @default(false)
+  hasChargers       Boolean         @default(false)
+  hasAC             Boolean         @default(true)
+  
+  // Status
+  isActive          Boolean         @default(false)
+  lastMaintenance   DateTime?
+  nextMaintenance   DateTime?
+  
+  // Documents
+  insurance         String?
+  registration      String?
+  inspection        String?
+  
+  // Relations
+  driver            Driver          @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  bookings          Booking[]
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("vehicles")
+}
+
+// ================================
+// BOOKING MODELS
+// ================================
+
+model Booking {
+  id                String          @id @default(cuid())
+  userId            String
+  driverId          String?
+  vehicleId         String?
+  
+  // Trip details
+  pickupAddress     String
+  pickupLat         Decimal         @db.Decimal(10,8)
+  pickupLng         Decimal         @db.Decimal(11,8)
+  dropoffAddress    String
+  dropoffLat        Decimal         @db.Decimal(10,8)
+  dropoffLng        Decimal         @db.Decimal(11,8)
+  
+  // Timing
+  scheduledFor      DateTime        @default(now())
+  estimatedDuration Int?            // minutes
+  estimatedDistance Decimal?        @db.Decimal(8,2) // km
+  
+  // Pricing
+  estimatedPrice    Decimal         @db.Decimal(10,2)
+  finalPrice        Decimal?        @db.Decimal(10,2)
+  currency          String          @default("EUR")
+  
+  // Status tracking
+  status            BookingStatus   @default(PENDING)
+  
+  // Trip tracking
+  startedAt         DateTime?
+  arrivedAt         DateTime?
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+  cancellationReason String?
+  
+  // Special requests
+  specialRequests   String?
+  passengerCount    Int             @default(1)
+  
+  // Relations
+  user              User            @relation(fields: [userId], references: [id])
+  driver            Driver?         @relation(fields: [driverId], references: [id])
+  vehicle           Vehicle?        @relation(fields: [vehicleId], references: [id])
+  payment           Payment?
+  review            Review?
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("bookings")
+}
+
+// ================================
+// PAYMENT MODELS
+// ================================
+
+model Payment {
+  id                String          @id @default(cuid())
+  bookingId         String          @unique
+  userId            String
+  
+  // Payment details
+  amount            Decimal         @db.Decimal(10,2)
+  currency          String          @default("EUR")
+  method            PaymentMethod
+  status            PaymentStatus   @default(PENDING)
+  
+  // External payment data
+  stripePaymentId   String?
+  stripeChargeId    String?
+  
+  // Breakdown
+  basePrice         Decimal         @db.Decimal(10,2)
+  distancePrice     Decimal         @db.Decimal(10,2)
+  timePrice         Decimal         @db.Decimal(10,2)
+  surcharge         Decimal         @default(0) @db.Decimal(10,2)
+  tip               Decimal         @default(0) @db.Decimal(10,2)
+  discount          Decimal         @default(0) @db.Decimal(10,2)
+  
+  // Relations
+  booking           Booking         @relation(fields: [bookingId], references: [id])
+  user              User            @relation(fields: [userId], references: [id])
+  
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("payments")
+}
+
+// ================================
+// REVIEW MODELS
+// ================================
+
+model Review {
+  id                String          @id @default(cuid())
+  bookingId         String          @unique
+  userId            String
+  driverId          String
+  
+  // Ratings (1-5)
+  overallRating     Int
+  punctualityRating Int
+  cleanlinessRating Int
+  professionalismRating Int
+  vehicleRating     Int
+  
+  // Comments
+  comment           String?
+  driverResponse    String?
+  
+  // Status
+  isPublic          Boolean         @default(true)
+  isVerified        Boolean         @default(true)
+  
+  // Relations
+  booking           Booking         @relation(fields: [bookingId], references: [id])
+  user              User            @relation(fields: [userId], references: [id])
+  driver            Driver          @relation("DriverReviews", fields: [driverId], references: [id])
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("reviews")
+}
+
+// ================================
+// UTILITY MODELS
+// ================================
+
+model Address {
+  id                String          @id @default(cuid())
+  userId            String
+  
+  name              String          // "Home", "Office", etc.
+  address           String
+  lat               Decimal         @db.Decimal(10,8)
+  lng               Decimal         @db.Decimal(11,8)
+  
+  isDefault         Boolean         @default(false)
+  
+  // Relations
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("addresses")
+}
+
+model Document {
+  id                String          @id @default(cuid())
+  driverId          String
+  
+  type              DocumentType
+  fileName          String
+  fileUrl           String
+  
+  isVerified        Boolean         @default(false)
+  expiryDate        DateTime?
+  
+  // Relations
+  driver            Driver          @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  
+  @@map("documents")
+}
+
+model Earning {
+  id                String          @id @default(cuid())
+  driverId          String
+  
+  // Earnings details
+  grossAmount       Decimal         @db.Decimal(10,2)
+  commission        Decimal         @db.Decimal(10,2)
+  netAmount         Decimal         @db.Decimal(10,2)
+  
+  // Period
+  date              DateTime        @default(now())
+  week              Int
+  month             Int
+  year              Int
+  
+  // Relations
+  driver            Driver          @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime        @default(now())
+  
+  @@map("earnings")
+}
+
+// ================================
+// ENUMS
+// ================================
+
+enum MembershipTier {
+  STANDARD
+  GOLD
+  PLATINUM
+  VIP
+}
+
+enum DriverStatus {
+  OFFLINE
+  AVAILABLE
+  BUSY
+  BREAK
+}
+
+enum VehicleCategory {
+  BERLINE_EXECUTIVE
+  SUV_LUXE
+  VAN_PREMIUM
+  SUPERCAR
+  ELECTRIC_PREMIUM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DRIVER_ASSIGNED
+  DRIVER_EN_ROUTE
+  DRIVER_ARRIVED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum PaymentMethod {
+  CARD
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+  CORPORATE
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+enum DocumentType {
+  DRIVER_LICENSE
+  VEHICLE_REGISTRATION
+  INSURANCE
+  PROFESSIONAL_LICENSE
+  IDENTITY_CARD
+  BACKGROUND_CHECK
+}
