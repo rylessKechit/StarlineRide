@@ -1,15 +1,15 @@
-// src/store/slices/authSlice.ts
+// src/store/slices/authSlice.ts - Version client uniquement
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authAPI, LoginRequest, RegisterRequest } from '../../services/api';
-import { AuthState, UserType, User } from '../../types';
+import { AuthState, User } from '../../types';
 
 const initialState: AuthState = {
   isInitialized: false,
   isAuthenticated: false,
   user: null,
   token: null,
-  userType: null,
+  userType: 'user', // TOUJOURS 'user'
   loading: false,
   error: null,
 };
@@ -20,12 +20,12 @@ export const initializeAuth = createAsyncThunk(
   async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const userType = await AsyncStorage.getItem('userType') as UserType;
+      const userType = await AsyncStorage.getItem('userType'); // Sera toujours 'user'
       const userData = await AsyncStorage.getItem('user');
       
-      if (token && userType && userData) {
+      if (token && userType === 'user' && userData) {
         const user = JSON.parse(userData);
-        return { token, userType, user };
+        return { token, userType: 'user' as const, user };
       }
       return null;
     } catch (error) {
@@ -39,17 +39,25 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: LoginRequest, { rejectWithValue }) => {
     try {
-      const response = await authAPI.login(credentials);
+      // S'assurer que userType est toujours 'user'
+      const loginData = { ...credentials, userType: 'user' as const };
+      
+      const response = await authAPI.login(loginData);
       const { user, token, userType } = response.data.data;
+      
+      // Vérification côté client
+      if (userType !== 'user') {
+        throw new Error('Cette application est réservée aux clients');
+      }
       
       // Store in AsyncStorage
       await AsyncStorage.multiSet([
         ['authToken', token],
-        ['userType', userType],
+        ['userType', 'user'],
         ['user', JSON.stringify(user)],
       ]);
       
-      return { user, token, userType };
+      return { user, token, userType: 'user' as const };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erreur de connexion');
     }
@@ -63,14 +71,19 @@ export const register = createAsyncThunk(
       const response = await authAPI.register(userData);
       const { user, token, userType } = response.data.data;
       
+      // Vérification côté client
+      if (userType !== 'user') {
+        throw new Error('Cette application est réservée aux clients');
+      }
+      
       // Store in AsyncStorage
       await AsyncStorage.multiSet([
         ['authToken', token],
-        ['userType', userType],
+        ['userType', 'user'],
         ['user', JSON.stringify(user)],
       ]);
       
-      return { user, token, userType };
+      return { user, token, userType: 'user' as const };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Erreur d\'inscription');
     }
@@ -137,7 +150,7 @@ const authSlice = createSlice({
           state.isAuthenticated = true;
           state.user = action.payload.user;
           state.token = action.payload.token;
-          state.userType = action.payload.userType;
+          state.userType = 'user'; // TOUJOURS 'user'
         }
       })
       .addCase(initializeAuth.rejected, (state) => {
@@ -153,9 +166,9 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        (state as any).user = action.payload.user;
+        state.user = action.payload.user;
         state.token = action.payload.token;
-        state.userType = action.payload.userType as UserType;
+        state.userType = 'user'; // TOUJOURS 'user'
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -170,9 +183,9 @@ const authSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
         state.isAuthenticated = true;
-        (state as any).user = action.payload.user;
+        state.user = action.payload.user;
         state.token = action.payload.token;
-        state.userType = action.payload.userType as UserType;
+        state.userType = 'user'; // TOUJOURS 'user'
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;
@@ -184,7 +197,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
-        state.userType = null;
+        state.userType = 'user'; // RESET à 'user'
         state.error = null;
       })
       
@@ -195,7 +208,7 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
-        (state as any).user = action.payload;
+        state.user = action.payload;
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;

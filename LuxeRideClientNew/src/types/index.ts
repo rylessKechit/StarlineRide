@@ -1,5 +1,5 @@
-// src/types/index.ts
-export type UserType = 'user' | 'driver';
+// src/types/index.ts - Version client uniquement
+export type UserType = 'user'; // SIMPLIFIÉ - Plus de 'driver'
 
 export type MembershipTier = 'STANDARD' | 'GOLD' | 'PLATINUM' | 'VIP';
 
@@ -64,34 +64,22 @@ export interface User {
   updatedAt: string;
 }
 
+// Interface simplifiée pour le chauffeur (côté client - lecture seule)
 export interface Driver {
   id: string;
-  email: string;
-  phone: string;
   firstName: string;
   lastName: string;
   avatar?: string;
-  dateOfBirth: string;
-  isActive: boolean;
-  isOnline: boolean;
-  licenseNumber: string;
-  licenseExpiry: string;
-  experience: number;
-  languages: string[];
   rating: number;
   totalRides: number;
+  languages: string[];
   currentLat?: number;
   currentLng?: number;
-  lastLocationUpdate?: string;
-  status: 'OFFLINE' | 'AVAILABLE' | 'BUSY' | 'BREAK';
-  vehicles?: Vehicle[];
-  createdAt: string;
-  updatedAt: string;
 }
 
+// Interface simplifiée pour le véhicule (côté client - lecture seule)
 export interface Vehicle {
   id: string;
-  driverId: string;
   brand: string;
   model: string;
   year: number;
@@ -103,14 +91,6 @@ export interface Vehicle {
   hasWifi: boolean;
   hasChargers: boolean;
   hasAC: boolean;
-  isActive: boolean;
-  lastMaintenance?: string;
-  nextMaintenance?: string;
-  insurance?: string;
-  registration?: string;
-  inspection?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface Booking {
@@ -232,22 +212,20 @@ export type AuthStackParamList = {
 };
 
 export type MainStackParamList = {
-  Home: undefined;
+  MainTabs: undefined;
   BookRide: undefined;
   RideDetails: {rideId: string};
-  MyRides: undefined;
-  Profile: undefined;
   Payment: {bookingId: string};
   Review: {bookingId: string};
   Settings: undefined;
   Help: undefined;
 };
 
-// Form Types
+// Form Types - SIMPLIFIÉ
 export interface LoginForm {
   email: string;
   password: string;
-  userType: UserType;
+  userType: UserType; // Toujours 'user'
 }
 
 export interface RegisterForm {
@@ -351,7 +329,7 @@ export interface ApiError {
   }>;
 }
 
-// Socket Event Types
+// Socket Event Types (côté client uniquement)
 export interface SocketEvents {
   'driver_location_update': {
     bookingId: string;

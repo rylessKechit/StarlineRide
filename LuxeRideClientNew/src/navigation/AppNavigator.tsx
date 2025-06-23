@@ -1,5 +1,6 @@
 // src/navigation/AppNavigator.tsx
 import React, { useEffect } from 'react';
+import { Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -41,7 +42,7 @@ const AuthNavigator = () => (
   </AuthStack.Navigator>
 );
 
-// Tab Navigator
+// Tab Navigator - NOMS UNIQUES
 const TabNavigator = () => (
   <Tab.Navigator
     screenOptions={{
@@ -58,31 +59,39 @@ const TabNavigator = () => (
       tabBarInactiveTintColor: '#8E8E93',
     }}>
     <Tab.Screen 
-      name="Home" 
+      name="Home"
       component={HomeScreen}
       options={{
         title: 'Accueil',
-        // You can add icon here when you have react-native-vector-icons properly set up
+        tabBarIcon: ({ color, size }) => (
+          <Text style={{ fontSize: size, color }}>🏠</Text>
+        ),
       }}
     />
     <Tab.Screen 
-      name="MyRides" 
+      name="MyRides"
       component={MyRidesScreen}
       options={{
         title: 'Mes courses',
+        tabBarIcon: ({ color, size }) => (
+          <Text style={{ fontSize: size, color }}>🚗</Text>
+        ),
       }}
     />
     <Tab.Screen 
-      name="Profile" 
+      name="Profile"
       component={ProfileScreen}
       options={{
         title: 'Profil',
+        tabBarIcon: ({ color, size }) => (
+          <Text style={{ fontSize: size, color }}>👤</Text>
+        ),
       }}
     />
   </Tab.Navigator>
 );
 
-// Main Navigator
+// Main Navigator - NOMS UNIQUES
 const MainNavigator = () => (
   <MainStack.Navigator
     screenOptions={{
@@ -95,7 +104,7 @@ const MainNavigator = () => (
       },
     }}>
     <MainStack.Screen 
-      name="Home" 
+      name="MainTabs"
       component={TabNavigator}
       options={{ headerShown: false }}
     />

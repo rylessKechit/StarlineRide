@@ -1,7 +1,7 @@
-// src/services/api.ts
+// src/services/api.ts - Version client uniquement
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Driver, Vehicle, Booking, UserType } from '../types';
+import { User, Vehicle, Booking, Review } from '../types';
 
 const API_BASE_URL = __DEV__ 
   ? 'http://localhost:6000/api' 
@@ -46,7 +46,7 @@ api.interceptors.response.use(
 export interface LoginRequest {
   email: string;
   password: string;
-  userType: UserType;
+  userType: 'user'; // TOUJOURS 'user'
 }
 
 export interface RegisterRequest {
@@ -69,6 +69,16 @@ export interface BookingRequest {
   vehicleCategory?: string;
   passengerCount?: number;
   specialRequests?: string;
+}
+
+export interface ReviewRequest {
+  bookingId: string;
+  overallRating: number;
+  punctualityRating?: number;
+  cleanlinessRating?: number;
+  professionalismRating?: number;
+  vehicleRating?: number;
+  comment?: string;
 }
 
 // API Response Types
@@ -94,13 +104,23 @@ export interface BookingsResponse {
   };
 }
 
-// Auth API
+export interface ReviewsResponse {
+  reviews: Review[];
+  pagination?: {
+    total: number;
+    limit: number;
+    offset: number;
+    hasMore: boolean;
+  };
+}
+
+// Auth API - CLIENT UNIQUEMENT
 export const authAPI = {
   login: (data: LoginRequest) => 
     api.post<ApiResponse<AuthResponse>>('/auth/login', data),
   
   register: (data: RegisterRequest) => 
-    api.post<ApiResponse<AuthResponse>>('/auth/register/user', data),
+    api.post<ApiResponse<AuthResponse>>('/auth/register/user', data), // TOUJOURS /user
   
   getProfile: () => 
     api.get<ApiResponse<{profile: User}>>('/auth/profile'),
@@ -123,9 +143,6 @@ export const bookingsAPI = {
   getBooking: (id: string) => 
     api.get<ApiResponse<{booking: Booking}>>(`/bookings/${id}`),
   
-  updateStatus: (id: string, data: {status: string; location?: {lat: number; lng: number}}) => 
-    api.put(`/bookings/${id}/status`, data),
-  
   cancel: (id: string, reason?: string) => 
     api.post(`/bookings/${id}/cancel`, {reason}),
 };
@@ -143,6 +160,27 @@ export const paymentsAPI = {
   
   calculatePrice: (bookingId: string) => 
     api.post('/payments/calculate-price', {bookingId}),
+};
+
+// Reviews API
+export const reviewsAPI = {
+  create: (data: ReviewRequest) => 
+    api.post<ApiResponse<{review: Review}>>('/reviews', data),
+  
+  getMyReviews: (params?: {limit?: number; offset?: number}) => 
+    api.get<ApiResponse<ReviewsResponse>>('/reviews/my-reviews', {params}),
+  
+  updateReview: (reviewId: string, data: Partial<ReviewRequest>) => 
+    api.put<ApiResponse<{review: Review}>>(`/reviews/${reviewId}`, data),
+  
+  deleteReview: (reviewId: string) => 
+    api.delete(`/reviews/${reviewId}`),
+};
+
+// API pour obtenir des infos sur les chauffeurs disponibles (lecture seule côté client)
+export const driversAPI = {
+  getAvailable: (params: {lat: number; lng: number; vehicleCategory?: string}) => 
+    api.get<ApiResponse<{drivers: any[]}>>('/drivers/available', {params}),
 };
 
 export default api;

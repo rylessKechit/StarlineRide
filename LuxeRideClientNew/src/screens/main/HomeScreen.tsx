@@ -11,18 +11,15 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchMyBookings } from '../../store/slices/bookingSlice';
-import { MainStackParamList, Booking } from '../../types';
+import { Booking } from '../../types';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
 
-type HomeScreenProps = {
-  navigation: StackNavigationProp<MainStackParamList, 'Home'>;
-};
-
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<any>();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(state => (state as any).auth);
   const { bookings, loading } = useAppSelector(state => (state as any).bookings);
@@ -35,7 +32,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const loadData = async () => {
     try {
-      await dispatch(fetchMyBookings({ limit: 5 })).unwrap();
+      await dispatch(fetchMyBookings({ params: { limit: 5 } })).unwrap();
     } catch (error) {
       // Error handling can be added here
     }
@@ -87,19 +84,48 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
-  const activeBooking = bookings.find((b: any) => 
-    ['PENDING', 'CONFIRMED', 'DRIVER_ASSIGNED', 'DRIVER_EN_ROUTE', 'DRIVER_ARRIVED', 'IN_PROGRESS'].includes(b.status)
-  );
+  // Fonction pour calculer le total de manière sécurisée
+  const calculateTotalSpent = () => {
+    if (!Array.isArray(bookings) || bookings.length === 0) {
+      return '0';
+    }
+    
+    const total = bookings.reduce((sum: number, booking: Booking) => {
+      const price = booking.finalPrice || booking.estimatedPrice || 0;
+      return sum + (typeof price === 'number' ? price : 0);
+    }, 0);
+    
+    return total.toFixed(0);
+  };
 
-  const recentBookings = bookings.filter((b: any) => 
+  // Navigation vers BookRide (depuis le stack principal)
+  const navigateToBookRide = () => {
+    navigation.navigate('BookRide');
+  };
+
+  // Navigation vers RideDetails (depuis le stack principal)
+  const navigateToRideDetails = (rideId: string) => {
+    navigation.navigate('RideDetails', { rideId });
+  };
+
+  // Navigation vers MyRides (tab)
+  const navigateToMyRides = () => {
+    navigation.jumpTo('MyRides');
+  };
+
+  const activeBooking = Array.isArray(bookings) ? bookings.find((b: any) => 
+    ['PENDING', 'CONFIRMED', 'DRIVER_ASSIGNED', 'DRIVER_EN_ROUTE', 'DRIVER_ARRIVED', 'IN_PROGRESS'].includes(b.status)
+  ) : null;
+
+  const recentBookings = Array.isArray(bookings) ? bookings.filter((b: any) => 
     !['PENDING', 'CONFIRMED', 'DRIVER_ASSIGNED', 'DRIVER_EN_ROUTE', 'DRIVER_ARRIVED', 'IN_PROGRESS'].includes(b.status)
-  ).slice(0, 3);
+  ).slice(0, 3) : [];
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
@@ -127,9 +153,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </View>
           </View>
           
-          <TouchableOpacity
-            style={styles.avatarContainer}
-            onPress={() => navigation.navigate('Profile')}>
+          <TouchableOpacity style={styles.avatarContainer}>
             <Text style={styles.avatarText}>
               {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
             </Text>
@@ -140,7 +164,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={styles.quickActions}>
           <Button
             title="Réserver une course"
-            onPress={() => navigation.navigate('BookRide')}
+            onPress={navigateToBookRide}
             size="large"
             icon="🚗"
             style={styles.mainButton}
@@ -149,58 +173,70 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         {/* Active Booking */}
         {activeBooking && (
-          <Card style={styles.section}>
+          <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Course en cours</Text>
-              <View style={[
-                styles.statusBadge,
-                { backgroundColor: getStatusColor(activeBooking.status) }
-              ]}>
-                <Text style={styles.statusText}>
-                  {getStatusText(activeBooking.status)}
-                </Text>
-              </View>
             </View>
             
-            <View style={styles.bookingDetails}>
-              <View style={styles.addressContainer}>
-                <Text style={styles.addressLabel}>Départ</Text>
-                <Text style={styles.addressText} numberOfLines={1}>
-                  {activeBooking.pickupAddress}
+            <Card>
+              <View style={styles.bookingHeader}>
+                <Text style={styles.bookingDate}>
+                  {new Date(activeBooking.scheduledFor).toLocaleDateString('fr-FR', {
+                    day: 'numeric',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
                 </Text>
+                <View style={[
+                  styles.statusBadge,
+                  { backgroundColor: getStatusColor(activeBooking.status) }
+                ]}>
+                  <Text style={styles.statusText}>
+                    {getStatusText(activeBooking.status)}
+                  </Text>
+                </View>
               </View>
               
-              <View style={styles.arrow}>
-                <Text style={styles.arrowText}>→</Text>
+              <View style={styles.bookingDetails}>
+                <View style={styles.addressContainer}>
+                  <Text style={styles.addressLabel}>Départ</Text>
+                  <Text style={styles.addressText}>
+                    {activeBooking.pickupAddress}
+                  </Text>
+                </View>
+                <View style={styles.arrow}>
+                  <Text style={styles.arrowText}>→</Text>
+                </View>
+                <View style={styles.addressContainer}>
+                  <Text style={styles.addressLabel}>Arrivée</Text>
+                  <Text style={styles.addressText}>
+                    {activeBooking.dropoffAddress}
+                  </Text>
+                </View>
               </View>
-              
-              <View style={styles.addressContainer}>
-                <Text style={styles.addressLabel}>Arrivée</Text>
-                <Text style={styles.addressText} numberOfLines={1}>
-                  {activeBooking.dropoffAddress}
-                </Text>
-              </View>
-            </View>
 
-            {activeBooking.driver && (
-              <View style={styles.driverInfo}>
-                <Text style={styles.driverName}>
-                  {activeBooking.driver.firstName} {activeBooking.driver.lastName}
-                </Text>
-                <Text style={styles.driverRating}>
-                  ⭐ {activeBooking.driver.rating}/5
-                </Text>
-              </View>
-            )}
+              {activeBooking.driver && (
+                <View style={styles.driverInfo}>
+                  <View>
+                    <Text style={styles.driverName}>
+                      {activeBooking.driver.firstName} {activeBooking.driver.lastName}
+                    </Text>
+                    <Text style={styles.driverRating}>
+                      ⭐ {activeBooking.driver.rating || 5.0}
+                    </Text>
+                  </View>
+                </View>
+              )}
 
-            <Button
-              title="Voir les détails"
-              onPress={() => navigation.navigate('RideDetails', { rideId: activeBooking.id })}
-              variant="outline"
-              size="medium"
-              style={styles.detailsButton}
-            />
-          </Card>
+              <Button
+                title="Voir les détails"
+                onPress={() => navigateToRideDetails(activeBooking.id)}
+                variant="outline"
+                style={styles.detailsButton}
+              />
+            </Card>
+          </View>
         )}
 
         {/* Recent Bookings */}
@@ -208,16 +244,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Courses récentes</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('MyRides')}>
+              <TouchableOpacity onPress={navigateToMyRides}>
                 <Text style={styles.sectionLink}>Voir tout</Text>
               </TouchableOpacity>
             </View>
             
-            {recentBookings.map((booking: any) => (
+            {recentBookings.map((booking: Booking) => (
               <Card 
-                key={booking.id}
+                key={booking.id} 
                 style={styles.bookingCard}
-                onPress={() => navigation.navigate('RideDetails', { rideId: booking.id })}>
+                onPress={() => navigateToRideDetails(booking.id)}>
                 
                 <View style={styles.bookingHeader}>
                   <Text style={styles.bookingDate}>
@@ -243,7 +279,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     {booking.pickupAddress.split(',')[0]} → {booking.dropoffAddress.split(',')[0]}
                   </Text>
                   <Text style={styles.priceText}>
-                    {booking.finalPrice || booking.estimatedPrice}€
+                    {(booking.finalPrice || booking.estimatedPrice || 0).toFixed(0)}€
                   </Text>
                 </View>
               </Card>
@@ -256,7 +292,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <Text style={styles.sectionTitle}>Mes statistiques</Text>
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{bookings.length}</Text>
+              <Text style={styles.statNumber}>
+                {Array.isArray(bookings) ? bookings.length : 0}
+              </Text>
               <Text style={styles.statLabel}>Courses</Text>
             </View>
             <View style={styles.statItem}>
@@ -265,7 +303,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </View>
             <View style={styles.statItem}>
               <Text style={styles.statNumber}>
-                {bookings.reduce((sum: number, b: Booking) => sum + (b.finalPrice || b.estimatedPrice), 0).toFixed(0)}€
+                {calculateTotalSpent()}€
               </Text>
               <Text style={styles.statLabel}>Total</Text>
             </View>
@@ -372,6 +410,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  bookingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  bookingDate: {
+    fontSize: 14,
+    color: '#6C757D',
+  },
   bookingDetails: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -421,16 +469,6 @@ const styles = StyleSheet.create({
   bookingCard: {
     marginBottom: 12,
     padding: 12,
-  },
-  bookingHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  bookingDate: {
-    fontSize: 14,
-    color: '#6C757D',
   },
   statusBadgeSmall: {
     paddingHorizontal: 8,

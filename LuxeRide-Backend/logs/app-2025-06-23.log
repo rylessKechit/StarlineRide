@@ -1,0 +1,16 @@
+[2025-06-23T08:59:24.232Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-23T08:59:24.232Z] [INFO] 🌍 Environment: development 
+[2025-06-23T08:59:24.232Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-23T08:59:24.274Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-23T08:59:24.275Z] [INFO] 📊 Database: Remote 
+[2025-06-23T08:59:24.287Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-23T09:00:41.823Z] [INFO] New user registered: ryless.kechit@outlook.com 
+[2025-06-23T09:02:39.432Z] [INFO] user login successful: ryless.kechit@outlook.com 
+[2025-06-23T09:08:27.875Z] [INFO] 🔹 PostgreSQL connection closed through app termination 
+[2025-06-23T18:46:40.869Z] [INFO] 🚀 LuxeRide API Server running on port 6000 
+[2025-06-23T18:46:40.869Z] [INFO] 🌍 Environment: development 
+[2025-06-23T18:46:40.869Z] [INFO] 📱 Socket.io ready for real-time connections 
+[2025-06-23T18:46:40.883Z] [INFO] 🐘 PostgreSQL Connected successfully with Prisma 
+[2025-06-23T18:46:40.883Z] [INFO] 📊 Database: Remote 
+[2025-06-23T18:46:40.885Z] [INFO] 🟢 Database version: ["PostgreSQL 14.18 (Homebrew) on aarch64-apple-darwi..."]
+[2025-06-23T18:48:54.238Z] [INFO] New booking created: cmc9ga0280001w2ifio2aagiu - Found 0 available drivers 

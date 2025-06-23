@@ -28,7 +28,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [form, setForm] = useState<LoginForm>({
     email: '',
     password: '',
-    userType: 'user',
+    userType: 'user', // Toujours 'user' - plus de sélection
   });
 
   const [errors, setErrors] = useState<Partial<LoginForm>>({});
@@ -66,7 +66,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       await dispatch(login({
         email: form.email.trim().toLowerCase(),
         password: form.password,
-        userType: form.userType,
+        userType: 'user', // Toujours client
       })).unwrap();
     } catch (err) {
       // Error handled by useEffect
@@ -102,38 +102,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           </Text>
         </View>
 
-        {/* User Type Selector */}
-        <View style={styles.userTypeContainer}>
-          <TouchableOpacity
-            style={[
-              styles.userTypeButton,
-              form.userType === 'user' && styles.userTypeButtonActive
-            ]}
-            onPress={() => updateForm('userType', 'user')}>
-            <Text style={[
-              styles.userTypeText,
-              form.userType === 'user' && styles.userTypeTextActive
-            ]}>
-              👤 Client
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[
-              styles.userTypeButton,
-              form.userType === 'driver' && styles.userTypeButtonActive
-            ]}
-            onPress={() => updateForm('userType', 'driver')}>
-            <Text style={[
-              styles.userTypeText,
-              form.userType === 'driver' && styles.userTypeTextActive
-            ]}>
-              🚗 Chauffeur
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Form */}
+        {/* Form - PLUS DE SÉLECTEUR DE TYPE */}
         <View style={styles.form}>
           <Input
             label="Email"
@@ -168,7 +137,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         <View style={styles.footer}>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.footerText}>
-              Pas encore de compte ? <Text style={styles.footerLink}>S'inscrire</Text>
+              Pas encore de compte ? <Text style={styles.footerLink}>Créer un compte</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -191,7 +160,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 32,
   },
   backButton: {
     width: 40,
@@ -215,31 +184,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#6C757D',
-  },
-  userTypeContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F8F9FA',
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 32,
-  },
-  userTypeButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  userTypeButtonActive: {
-    backgroundColor: '#007AFF',
-  },
-  userTypeText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6C757D',
-  },
-  userTypeTextActive: {
-    color: '#FFFFFF',
   },
   form: {
     flex: 1,
